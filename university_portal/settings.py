@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,10 +27,12 @@ SECRET_KEY = os.environ.get('SECRET_KEY', '<fallback-secret_key>')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
+ALLOWED_HOSTS = [
+    'Dorisanioke.pythonanywhere.com',  
+    'localhost',
+    '127.0.0.1',
+]
 
-ALLOWED_HOSTS = ['willow-heights-portal.onrender.com', '*.onrender.com', 'localhost', '127.0.0.1']
-
-CSRF_TRUSTED_ORIGINS = ['https://willow-heights-portal.onrender.com']
 
 
 # Application definition
