@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}{{ home_page.title }} - Willow Heights University{% endblock %}
+
+{% block content %}
+<div class="home-hero" 
+     {% if home_page.background_image %}
+         style="background-image: url('{{ home_page.background_image.url }}');"
+     {% endif %}
+>
+    <div class="hero-text text-center">
+        <h1>{{ home_page.title }}</h1>
+        <p>{{ home_page.subtitle }}</p>
+        <p>{{ home_page.welcome_message }}</p>
+        <a href="{% url 'dashboard:portal_landing' %}" class="btn btn-primary">Go to Portals</a>
+    </div>
+</div>
+
+<div class="container mt-5">
+    <div class="row text-center">
+        {% for page in pages %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    {% if page.image %}
+                        <img src="{{ page.image.url }}" class="card-img-top" alt="{{ page.heading }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ page.heading }}</h5>
+                        <p class="card-text">{{ page.content|truncatechars:100 }}</p>
+                        <a href="{% url 'dashboard:portal_page' page.page_key %}" class="btn btn-outline-primary">Visit {{ page.heading }}</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

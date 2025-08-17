@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Profile - Willow Heights University{% endblock %}
+
+{% block content %}
+<div class="container portal-heading-container">
+    <h1 class="portal-heading">Your Profile</h1>
+</div>
+
+<div class="container portal-content-container">
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Update Profile</button>
+    </form>
+</div>
+{% endblock %}

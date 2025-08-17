@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}My Courses - Willow Heights University{% endblock %}
+
+{% block content %}
+<div class="container portal-heading-container">
+    <h1 class="portal-heading">My Courses</h1>
+</div>
+
+<div class="container portal-content-container">
+
+    <!-- Search Form -->
+    <form method="get" class="mb-3">
+        <input type="text" name="search" placeholder="Search courses..." value="{{ search_query }}" 
+               class="form-control" style="max-width:400px;">
+    </form>
+
+    {% if enrollments %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Course Code</th>
+                    <th>Course Name</th>
+                    <th>Description</th>
+                    <th>Date Enrolled</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for enrollment in enrollments %}
+                <tr>
+                    <td>{{ enrollment.course.code }}</td>
+                    <td>{{ enrollment.course.name }}</td>
+                    <td>{{ enrollment.course.description|safe }}</td>
+                    <td>{{ enrollment.date_enrolled }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No courses found.</p>
+    {% endif %}
+</div>
+{% endblock %}

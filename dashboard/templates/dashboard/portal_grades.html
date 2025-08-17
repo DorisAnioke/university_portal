@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}My Grades - Willow Heights University{% endblock %}
+
+{% block content %}
+<div class="container portal-heading-container">
+    <h1 class="portal-heading">My Grades</h1>
+</div>
+
+<div class="container portal-content-container">
+
+    <!-- Search Form -->
+    <form method="get" class="mb-3">
+        <input type="text" name="search" placeholder="Search by course..." value="{{ search_query }}" 
+               class="form-control" style="max-width:400px;">
+    </form>
+
+    {% if grades %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Course Code</th>
+                    <th>Course Name</th>
+                    <th>Grade</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for grade in grades %}
+                <tr>
+                    <td>{{ grade.course.code }}</td>
+                    <td>{{ grade.course.name }}</td>
+                    <td>{{ grade.grade }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No grades found.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+<div class="container portal-heading-container">
+    <h1 class="portal-heading">Library Resources</h1>
+</div>
+
+<div class="container portal-content-container">
+
+    <!-- Search Form -->
+    <form method="get" class="mb-3" style="max-width:400px;">
+        <input type="text" name="search" placeholder="Search library..." value="{{ search_query }}" 
+               class="form-control">
+    </form>
+
+    {% for item in items %}
+        <div class="card mb-3 p-3">
+            <h3>{{ item.title }}</h3>
+            {% if item.author %}<p><strong>Author:</strong> {{ item.author }}</p>{% endif %}
+            <p>{{ item.description|safe }}</p>
+            {% if item.pdf_file %}
+                <p><a href="{{ item.pdf_file.url }}" target="_blank">Download PDF</a></p>
+            {% endif %}
+        </div>
+    {% empty %}
+        <p>No library resources found.</p>
+    {% endfor %}
+</div>

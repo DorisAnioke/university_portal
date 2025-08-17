@@ -1,0 +1,116 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Willow Heights University{% endblock %}</title>
+
+    <!-- Custom Styles & Bootstrap -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            padding-top: 70px; /* Prevent content from being hidden under navbar */
+        }
+        .navbar-nav .nav-link.active {
+            font-weight: bold;
+            color: #ffc107 !important;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top shadow-sm">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="{% url 'dashboard:home' %}">
+            Willow Heights University
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                {% for p in portal_pages %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if page and page.page_key == p.page_key %}active{% endif %}"
+                           href="{% url 'dashboard:portal_page' p.page_key %}">
+                            {{ p.heading }}
+                        </a>
+                    </li>
+                {% endfor %}
+
+                {% if user.is_authenticated %}
+                    <!-- Greeting -->
+                    <li class="nav-item d-flex align-items-center me-3">
+                        <span class="text-light">Hello, {{ user.get_full_name|default:user.username }}</span>
+                    </li>
+
+                    <!-- Logout Form -->
+                    <li class="nav-item d-flex align-items-center">
+                        <form method="POST" action="{% url 'dashboard:logout' %}" class="m-0 p-0 d-flex">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-link nav-link p-0 m-0">Logout</button>
+                        </form>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard:login' %}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard:register' %}">Register</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<main>
+    {% block content %}{% endblock %}
+</main>
+
+<!-- Footer -->
+<footer class="bg-dark text-light mt-5 pt-4 pb-3">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <h5>About Willow Heights University</h5>
+                <p>Empowering students with world-class education and modern resources.</p>
+            </div>
+            <div class="col-md-3 mb-3">
+                <h5>Quick Links</h5>
+                <ul class="list-unstyled">
+                    {% for p in portal_pages %}
+                        <li>
+                            <a href="{% url 'dashboard:portal_page' p.page_key %}" class="text-light text-decoration-none">
+                                {{ p.heading }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="col-md-3 mb-3">
+                <h5>Contact Us</h5>
+                <p>Email: support@willowheights.edu</p>
+                <p>Phone: +234 800 123 4567</p>
+            </div>
+        </div>
+        <div class="text-center mt-3">
+            <p class="mb-0">&copy; {{ now|date:"Y" }} Willow Heights University. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

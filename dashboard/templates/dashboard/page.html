@@ -1,0 +1,223 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+
+{% block title %}{{ page.heading }} - Willow Heights University{% endblock %}
+
+{% block content %}
+<div style="height: 80px;"></div>
+
+<!-- Page Heading -->
+<div class="container portal-heading-container mb-4">
+    <h1 class="portal-heading">{{ page.heading }}</h1>
+</div>
+
+<!-- Main Page Content -->
+<div class="container portal-content-container">
+    <div class="page-content portal-content">
+
+        {% if page.page_key == "dashboard" %}
+            {{ page.main_content|safe }}
+
+        {% elif page.page_key == "courses" %}
+            <!-- My Courses -->
+            {% if enrollments %}
+                <form method="get" class="mb-3">
+                    <input type="text" name="search" placeholder="Search courses..." 
+                           value="{{ search_query }}" class="form-control" style="max-width:400px;">
+                </form>
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Course Code</th>
+                            <th>Course Name</th>
+                            <th>Description</th>
+                            <th>Date Enrolled</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for enrollment in enrollments %}
+                        <tr>
+                            <td>{{ enrollment.course.code }}</td>
+                            <td>{{ enrollment.course.name }}</td>
+                            <td>{{ enrollment.course.description|safe }}</td>
+                            <td>{{ enrollment.date_enrolled }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>You are not enrolled in any courses yet.</p>
+            {% endif %}
+
+        {% elif page.page_key == "grades" %}
+            <!-- Grades -->
+            {% if grades %}
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Course</th>
+                            <th>Grade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for g in grades %}
+                        <tr>
+                            <td>{{ g.course.name }}</td>
+                            <td>{{ g.grade }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No grades available.</p>
+            {% endif %}
+
+        {% elif page.page_key == "finance" %}
+            <!-- Transactions -->
+            {% if transactions %}
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Description</th>
+                            <th>Amount</th>
+                            <th>Type</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for t in transactions %}
+                        <tr>
+                            <td>{{ t.description }}</td>
+                            <td>{{ t.amount }}</td>
+                            <td>{{ t.is_credit|yesno:"Credit,Debit" }}</td>
+                            <td>{{ t.date }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No transactions found.</p>
+            {% endif %}
+
+        {% elif page.page_key == "library" %}
+            <!-- Library -->
+            {% if library_items %}
+                <form method="get" class="mb-3">
+                    <input type="text" name="search" placeholder="Search library..." 
+                           value="{{ search_query }}" class="form-control" style="max-width:400px;">
+                </form>
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in library_items %}
+                        <tr>
+                            <td>{{ item.title }}</td>
+                            <td>{{ item.author }}</td>
+                            <td>{{ item.description|safe }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No library items found.</p>
+            {% endif %}
+
+        {% elif page.page_key == "events" %}
+            <!-- Events -->
+            {% if events %}
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Title</th>
+                            <th>Date</th>
+                            <th>Location</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for e in events %}
+                        <tr>
+                            <td>{{ e.title }}</td>
+                            <td>{{ e.date }}</td>
+                            <td>{{ e.location }}</td>
+                            <td>{{ e.description|safe }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No upcoming events.</p>
+            {% endif %}
+
+        {% elif page.page_key == "profile" %}
+            <!-- Student Profile -->
+            {% if profile %}
+                <div class="container mt-4">
+                    <div class="card shadow-sm p-4">
+                        <div class="row">
+                            <div class="col-md-3 text-center">
+                                {% if profile.profile_picture %}
+                                    <img src="{{ profile.profile_picture.url }}" 
+                                         alt="Profile Picture" class="img-fluid rounded-circle mb-3 shadow-sm" width="150" height="150">
+                                {% else %}
+                                    <img src="https://via.placeholder.com/150x150.png?text=No+Image" 
+                                         alt="Default Picture" class="img-fluid rounded-circle mb-3 shadow-sm">
+                                {% endif %}
+                            </div>
+                            <div class="col-md-9">
+                                <h4>{{ user.get_full_name|default:user.username }}</h4>
+                                <p><strong>Email:</strong> {{ user.email }}</p>
+                                <p><strong>Phone:</strong> {{ profile.phone|default:"Not set" }}</p>
+                                <p><strong>Address:</strong> {{ profile.address|default:"Not set" }}</p>
+                                <p><strong>Bio:</strong> {{ profile.bio|default:"No bio added yet." }}</p>
+                                {% if user.is_staff %}
+                                <a href="{% url 'dashboard:edit_profile' %}" class="btn btn-primary mt-3">
+                                    Edit Profile
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <p>No profile information available.</p>
+            {% endif %}
+
+        {% elif page.page_key == "help" %}
+            <!-- FAQs -->
+            {% if faqs %}
+                <div class="accordion" id="faqAccordion">
+                    {% for faq in faqs %}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading{{ faq.id }}">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapse{{ faq.id }}" aria-expanded="false" aria-controls="collapse{{ faq.id }}">
+                                {{ faq.question }}
+                            </button>
+                        </h2>
+                        <div id="collapse{{ faq.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ faq.id }}" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                {{ faq.answer|safe }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No FAQs found.</p>
+            {% endif %}
+
+        {% else %}
+            <!-- Fallback content -->
+            {{ page.main_content|safe }}
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}

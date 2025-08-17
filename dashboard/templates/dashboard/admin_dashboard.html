@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Admin Dashboard - Willow Heights University{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+
+    <!-- Dashboard Heading -->
+    <h1 class="text-center mb-4" style="color:#004080;">Admin Dashboard</h1>
+
+    <!-- Stats Cards -->
+    <div class="row text-center mb-4">
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card shadow-sm p-4">
+                <h5>Total Students</h5>
+                <p class="display-6">{{ total_students }}</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card shadow-sm p-4">
+                <h5>Total Courses</h5>
+                <p class="display-6">{{ total_courses }}</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card shadow-sm p-4">
+                <h5>Total Enrollments</h5>
+                <p class="display-6">{{ total_enrollments }}</p>
+            </div>
+        </div>
+        <div class="col-md-3 col-sm-6 mb-3">
+            <div class="card shadow-sm p-4">
+                <h5>Total Transactions</h5>
+                <p class="display-6">{{ total_transactions }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row mb-4">
+        <!-- Grades Distribution -->
+        <div class="col-md-6 mb-4">
+            <div class="card p-3 shadow-sm">
+                <h5 class="text-center mb-3">Grades Distribution</h5>
+                <canvas id="gradesChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Transactions Overview -->
+        <div class="col-md-6 mb-4">
+            <div class="card p-3 shadow-sm">
+                <h5 class="text-center mb-3">Transactions Overview</h5>
+                <canvas id="transactionsChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enrollments per Course -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card p-3 shadow-sm">
+                <h5 class="text-center mb-3">Enrollments per Course</h5>
+                <canvas id="enrollmentsChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Grades Chart
+    new Chart(document.getElementById('gradesChart'), {
+        type: 'pie',
+        data: {
+            labels: {{ grade_labels|safe }},
+            datasets: [{
+                data: {{ grade_counts|safe }},
+                backgroundColor: ['#4e79a7', '#f28e2b', '#e15759', '#76b7b2', '#59a14f', '#edc949']
+            }]
+        },
+        options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+    });
+
+    // Transactions Chart
+    new Chart(document.getElementById('transactionsChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Credit', 'Debit'],
+            datasets: [{
+                data: [{{ total_credit }}, {{ total_debit }}],
+                backgroundColor: ['#4caf50', '#f44336']
+            }]
+        },
+        options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+    });
+
+    // Enrollments per Course Chart
+    const courseLabels = [{% for course in courses %}'{{ course.name }}',{% endfor %}];
+    const courseEnrollments = [{% for course in courses %}{{ course.enrollment_count }},{% endfor %}];
+
+    new Chart(document.getElementById('enrollmentsChart'), {
+        type: 'bar',
+        data: {
+            labels: courseLabels,
+            datasets: [{
+                label: 'Enrollments',
+                data: courseEnrollments,
+                backgroundColor: '#4e79a7'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: { legend: { display: false } },
+            scales: { y: { beginAtZero: true } }
+        }
+    });
+</script>
+
+<!-- Optional Dashboard CSS Overrides -->
+<style>
+    /* Cards hover effect */
+    .card {
+        transition: transform 0.3s, box-shadow 0.3s;
+        border-radius: 10px;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    /* Center chart headings */
+    .card h5 {
+        color: #004080;
+        font-weight: bold;
+    }
+
+    /* Display numbers larger */
+    .display-6 {
+        font-weight: bold;
+        color: #004080;
+    }
+
+    @media (max-width: 768px) {
+        .display-6 {
+            font-size: 2rem;
+        }
+    }
+</style>
+
+{% endblock %}

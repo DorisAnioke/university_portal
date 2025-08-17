@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Portal Landing - Willow Heights University{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">All Portal Pages</h1>
+    <div class="row text-center">
+        {% for page in pages %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    {% if page.image %}
+                        <img src="{{ page.image.url }}" class="card-img-top" alt="{{ page.heading }}">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title">{{ page.heading }}</h5>
+                        <p class="card-text">{{ page.content|truncatechars:100 }}</p>
+                        <a href="{% url 'dashboard:portal_page' page.page_key %}" class="btn btn-outline-primary">Visit {{ page.heading }}</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

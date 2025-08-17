@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Events - Willow Heights University{% endblock %}
+
+{% block content %}
+<div class="container portal-heading-container">
+    <h1 class="portal-heading">Upcoming Events</h1>
+</div>
+
+<div class="container portal-content-container">
+    {% if events %}
+        <ul>
+        {% for event in events %}
+            <li>
+                <strong>{{ event.title }}</strong> - {{ event.date }}<br>
+                {{ event.location }}<br>
+                {{ event.description|safe }}
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No upcoming events.</p>
+    {% endif %}
+</div>
+{% endblock %}

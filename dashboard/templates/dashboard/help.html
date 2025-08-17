@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Help - Willow Heights University{% endblock %}
+
+{% block content %}
+<div class="container portal-heading-container">
+    <h1 class="portal-heading">Help & FAQs</h1>
+</div>
+
+<div class="container portal-content-container">
+    {% if faqs %}
+        {% for faq in faqs %}
+            <div class="card mb-3 p-3">
+                <h5>{{ faq.question }}</h5>
+                <p>{{ faq.answer|safe }}</p>
+                <p><em>Category: {{ faq.get_category_display }}</em></p>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No FAQs available yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

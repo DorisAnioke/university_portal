@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}My Transactions - Willow Heights University{% endblock %}
+
+{% block content %}
+<div class="container portal-heading-container">
+    <h1 class="portal-heading">My Transactions</h1>
+</div>
+
+<div class="container portal-content-container">
+
+    <!-- Search & Filter Form -->
+    <form method="get" class="mb-3 d-flex gap-2 flex-wrap">
+        <input type="text" name="search" placeholder="Search description..." 
+               value="{{ search_query }}" class="form-control" style="max-width:300px;">
+        <select name="type" class="form-select" style="max-width:200px;">
+            <option value="">All Types</option>
+            <option value="credit" {% if type_filter == 'credit' %}selected{% endif %}>Credit</option>
+            <option value="debit" {% if type_filter == 'debit' %}selected{% endif %}>Debit</option>
+        </select>
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </form>
+
+    {% if transactions %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in transactions %}
+                <tr>
+                    <td>{{ transaction.date }}</td>
+                    <td>{{ transaction.description }}</td>
+                    <td>{{ transaction.amount }}</td>
+                    <td>{{ transaction.is_credit|yesno:"Credit,Debit" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No transactions found.</p>
+    {% endif %}
+</div>
+{% endblock %}
